@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Tiles Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        @keyframes twinkling {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(ellipse at 50% 50%, #0a0e27 0%, #000000 100%);
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 20px;
+            letter-spacing: 40px;
+            pointer-events: none;
+            z-index: 1;
+            animation: twinkling 4s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 20px;
+            letter-spacing: 40px;
+            pointer-events: none;
+            z-index: 1;
+            animation: twinkling 5s ease-in-out infinite reverse;
+        }
+
+        #startMenu {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(
+                circle at 20% 50%,
+                rgba(102, 126, 234, 0.1),
+                rgba(0, 0, 0, 0.95) 50%
+            ),
+            linear-gradient(135deg, rgba(10, 14, 39, 0.9), rgba(0, 0, 0, 0.9));
+            z-index: 1000;
+            flex-direction: column;
+            gap: 30px;
+            padding: 40px 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        #startMenu::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.8), rgba(255,255,255,0)),
+                radial-gradient(2px 2px at 60px 70px, rgba(255,255,255,0.5), rgba(255,255,255,0)),
+                radial-gradient(1px 1px at 50px 50px, rgba(255,255,255,0.6), rgba(255,255,255,0)),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.4), rgba(255,255,255,0)),
+                radial-gradient(2px 2px at 90px 10px, rgba(255,255,255,0.7), rgba(255,255,255,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            pointer-events: none;
+            animation: twinkling 3s ease-in-out infinite;
+        }
+        
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        #startMenu.hidden {
+            display: none;
+        }
+
+        .menu-title {
+            font-size: 52px;
+            color: #fff;
+            text-align: center;
+            text-shadow: 
+                0 0 10px rgba(102, 126, 234, 0.8),
+                0 0 20px rgba(102, 126, 234, 0.6),
+                0 0 40px rgba(102, 126, 234, 0.4);
+            font-weight: bold;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 10;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .menu-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            text-align: center;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .menu-controls {
+            font-size: 15px;
+            color: #aaa;
+            text-align: center;
+            line-height: 1.8;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 30px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .menu-controls strong {
+            color: #667eea;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .speed-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 30px;
+            border-radius: 10px;
+            border-left: 4px solid #764ba2;
+        }
+
+        .speed-label {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            letter-spacing: 1px;
+        }
+
+        .speed-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .speed-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+
+        .speed-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .speed-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+        }
+
+        #startButton {
+            padding: 16px 50px;
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            letter-spacing: 1px;
+        }
+
+        #startButton:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 40px rgba(102, 126, 234, 1);
+        }
+
+        #startButton:active {
+            transform: scale(0.95);
+        }
+
+        /* Game Container */
+        #gameContainer {
+            position: relative;
+            width: 400px;
+            height: 600px;
+            background: #000;
+            border: 3px solid #fff;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Game Area */
+        #gameArea {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Columns */
+        .column {
+            position: absolute;
+            width: 100px;
+            height: 600px;
+            top: 0;
+            border-right: none;
+        }
+
+        .column:nth-child(1) { 
+            left: 0; 
+            background: linear-gradient(to bottom, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.05));
+        }
+        .column:nth-child(2) { 
+            left: 100px; 
+            background: linear-gradient(to bottom, rgba(75, 192, 192, 0.1), rgba(75, 192, 192, 0.05));
+        }
+        .column:nth-child(3) { 
+            left: 200px; 
+            background: linear-gradient(to bottom, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+        }
+        .column:nth-child(4) { 
+            left: 300px; 
+            background: linear-gradient(to bottom, rgba(156, 39, 176, 0.1), rgba(156, 39, 176, 0.05));
+        }
+
+        /* Click zone (bottom line) */
+        #clickZone {
+            position: absolute;
+            width: 100%;
+            height: 80px;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(76, 175, 80, 0.25), rgba(76, 175, 80, 0.1));
+            border-top: 3px solid #4CAF50;
+            z-index: 10;
+            box-shadow: 0 -5px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Tiles */
+        .tile {
+            position: absolute;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: all 0.05s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tile[data-column="0"] {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%);
+            border-color: #FFB3B3;
+        }
+
+        .tile[data-column="1"] {
+            background: linear-gradient(135deg, #4BCDC4 0%, #1ABC9C 100%);
+            border-color: #7FE6E0;
+        }
+
+        .tile[data-column="2"] {
+            background: linear-gradient(135deg, #FFD93D 0%, #FFC107 100%);
+            border-color: #FFEB99;
+        }
+
+        .tile[data-column="3"] {
+            background: linear-gradient(135deg, #C77DFF 0%, #9D4EDD 100%);
+            border-color: #E0AAFF;
+        }
+
+        .tile:hover {
+            filter: brightness(1.2);
+        }
+
+        .tile.hit {
+            background: #4CAF50;
+            border-color: #90EE90;
+            animation: tileHit 0.3s, tileGlow 0.3s;
+        }
+
+        @keyframes tileHit {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1.1); opacity: 0; }
+        }
+
+        @keyframes tileGlow {
+            0% {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(76, 175, 80, 1);
+            }
+            100% {
+                box-shadow: 0 0 50px rgba(76, 175, 80, 0);
+            }
+        }
+
+        .tile::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .tile.hit::after {
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            animation: tileRipple 0.4s ease-out;
+        }
+
+        @keyframes tileRipple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* HUD */
+        #hud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 20;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #score {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        #lives {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .life {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #ff4444;
+            border-radius: 50%;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+
+        /* Game Over Screen */
+        #gameOverScreen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            display: none;
+        }
+
+        #gameOverScreen.visible {
+            display: flex;
+        }
+
+        .game-over-title {
+            font-size: 48px;
+            color: #ff4444;
+            text-align: center;
+        }
+
+        .final-score {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+        }
+
+        #restartButton {
+            padding: 12px 30px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+        }
+
+        #restartButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.9);
+        }
+
+        /* Key guides */
+        .column::before {
+            content: '' !important;
+            display: none !important;
+        }
+
+        /* Combo Display */
+        #comboDisplay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD93D;
+            text-shadow: 0 0 20px rgba(255, 217, 61, 0.8);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 15;
+            animation: comboPopup 0.6s ease-out;
+        }
+
+        @keyframes comboPopup {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -150%) scale(1.5);
+            }
+        }
+
+        #highScore {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            z-index: 25;
+        }
+
+        #combo {
+            position: absolute;
+            bottom: 100px;
+            left: 10px;
+            background: rgba(255, 217, 61, 0.2);
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: #FFD93D;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #FFD93D;
+            z-index: 25;
+        }
+
+        .pulse-effect {
+            animation: pulse 0.3s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Start Menu -->
+    <div id="startMenu">
+        <div class="menu-title">🎹 PIANO TILES</div>
+        <div class="menu-subtitle">Click the tiles as they fall!</div>
+        <div class="menu-controls">
+            <strong>Controls:</strong><br>
+            Q - Left Column<br>
+            W - Left-Middle Column<br>
+            E - Right-Middle Column<br>
+            R - Right Column
+        </div>
+        <div class="speed-selector">
+            <span class="speed-label">Game Speed:</span>
+            <div class="speed-buttons">
+                <button class="speed-btn" data-speed="2">Slow</button>
+                <button class="speed-btn active" data-speed="3">Normal</button>
+                <button class="speed-btn" data-speed="5">Fast</button>
+                <button class="speed-btn" data-speed="7">Very Fast</button>
+            </div>
+        </div>
+        <button id="startButton">START GAME</button>
+    </div>
+
+    <!-- Game Container -->
+    <div id="gameContainer">
+        <div id="gameArea">
+            <div class="column" data-key="Q" data-column="0"></div>
+            <div class="column" data-key="W" data-column="1"></div>
+            <div class="column" data-key="E" data-column="2"></div>
+            <div class="column" data-key="R" data-column="3"></div>
+            <div id="clickZone"></div>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud">
+            <div id="score">Score: <span>0</span></div>
+            <div id="lives">Lives: <span id="livesDisplay"></span></div>
+        </div>
+
+        <!-- High Score -->
+        <div id="highScore">Best: <span id="bestScore">0</span></div>
+
+        <!-- Combo Display -->
+        <div id="combo">Combo: <span id="comboCount">0</span></div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen">
+            <div class="game-over-title">GAME OVER</div>
+            <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+            <button id="restartButton">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        const gameConfig = {
+            tileHeight: 80,
+            tileSpacing: 80,
+            clickZoneY: 520,
+            speed: 3,
+            spawnRate: 0.025,
+            columns: 4,
+            tileWidth: 100,
+            minSpeed: 2,
+            maxSpeed: 8,
+            speedIncreasePerScore: 50
+        };
+
+        let gameState = {
+            score: 0,
+            lives: 4,
+            isGameRunning: false,
+            tiles: [],
+            nextTileId: 0,
+            selectedSpeed: 3,
+            combo: 0,
+            bestScore: localStorage.getItem('pianoTilesBestScore') || 0,
+            baseSpeed: 3
+        };
+
+        const elements = {
+            startMenu: document.getElementById('startMenu'),
+            gameContainer: document.getElementById('gameContainer'),
+            gameArea: document.getElementById('gameArea'),
+            startButton: document.getElementById('startButton'),
+            scoreDisplay: document.querySelector('#score span'),
+            livesDisplay: document.getElementById('livesDisplay'),
+            gameOverScreen: document.getElementById('gameOverScreen'),
+            finalScore: document.getElementById('finalScore'),
+            restartButton: document.getElementById('restartButton'),
+            bestScoreDisplay: document.querySelector('#bestScore'),
+            comboCount: document.getElementById('comboCount')
+        };
+
+        // Speed button selection
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                gameState.selectedSpeed = parseInt(btn.dataset.speed);
+                gameState.baseSpeed = gameState.selectedSpeed;
+                gameConfig.speed = gameState.selectedSpeed;
+            });
+        });
+
+        // Update combo display
+        function updateComboDisplay() {
+            elements.comboCount.textContent = gameState.combo;
+        }
+
+        // Add combo popup effect
+        function showComboPopup() {
+            if (gameState.combo > 1 && gameState.combo % 5 === 0) {
+                const popup = document.createElement('div');
+                popup.id = 'comboDisplay';
+                popup.textContent = `${gameState.combo} COMBO!`;
+                elements.gameArea.appendChild(popup);
+                setTimeout(() => popup.remove(), 600);
+            }
+        }
+
+        // Update difficulty based on score
+        function updateDifficulty() {
+            const scoreMultiplier = Math.floor(gameState.score / gameConfig.speedIncreasePerScore) * 0.2;
+            const newSpeed = Math.min(gameState.baseSpeed + scoreMultiplier, gameConfig.maxSpeed);
+            gameConfig.speed = newSpeed;
+        }
+
+        // Update best score in localStorage
+        function updateBestScore() {
+            if (gameState.score > gameState.bestScore) {
+                gameState.bestScore = gameState.score;
+                localStorage.setItem('pianoTilesBestScore', gameState.bestScore);
+                elements.bestScoreDisplay.textContent = gameState.bestScore;
+            }
+        }
+
+        // Update lives display
+        function updateLivesDisplay() {
+            let livesHTML = '';
+            for (let i = 0; i < gameState.lives; i++) {
+                livesHTML += '<span class="life"></span>';
+            }
+            elements.livesDisplay.innerHTML = livesHTML;
+        }
+
+        // Update score display
+        function updateScoreDisplay() {
+            elements.scoreDisplay.textContent = gameState.score;
+            updateDifficulty();
+        }
+
+        // Create a new tile
+        function createTile() {
+            const column = Math.floor(Math.random() * gameConfig.columns);
+            
+            // Check if there's enough space in this column
+            const tilesInColumn = gameState.tiles.filter(t => t.column === column);
+            if (tilesInColumn.length > 0) {
+                const highestTile = tilesInColumn.reduce((min, t) => t.y < min.y ? t : min);
+                if (highestTile.y < gameConfig.tileSpacing) {
+                    return;
+                }
+            }
+            
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.style.left = column * gameConfig.tileWidth + 'px';
+            tile.style.top = '-' + gameConfig.tileHeight + 'px';
+            tile.dataset.id = gameState.nextTileId++;
+            tile.dataset.column = column;
+            tile.textContent = ['Q', 'W', 'E', 'R'][column];
+            
+            elements.gameArea.appendChild(tile);
+            
+            gameState.tiles.push({
+                id: tile.dataset.id,
+                element: tile,
+                column: column,
+                y: -gameConfig.tileHeight,
+                clicked: false
+            });
+        }
+
+        // Update tile positions
+        function updateTiles() {
+            gameState.tiles = gameState.tiles.filter(tile => {
+                tile.y += gameConfig.speed;
+                tile.element.style.top = tile.y + 'px';
+
+                if (tile.y > gameConfig.clickZoneY && !tile.clicked) {
+                    gameState.lives--;
+                    gameState.combo = 0;
+                    updateComboDisplay();
+                    updateLivesDisplay();
+                    
+                    // Visual feedback for missed tile
+                    elements.gameContainer.classList.add('pulse-effect');
+                    setTimeout(() => elements.gameContainer.classList.remove('pulse-effect'), 300);
+                    
+                    tile.element.remove();
+                    return false;
+                }
+
+                if (tile.y > gameConfig.clickZoneY + 100) {
+                    tile.element.remove();
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        // Handle tile click
+        function clickTile(column) {
+            for (let i = 0; i < gameState.tiles.length; i++) {
+                const tile = gameState.tiles[i];
+                if (tile.column === column && !tile.clicked) {
+                    if (tile.y >= gameConfig.clickZoneY - 100 && tile.y <= gameConfig.clickZoneY + 80) {
+                        tile.clicked = true;
+                        tile.element.classList.add('hit');
+                        
+                        // Increase combo and score
+                        gameState.combo++;
+                        gameState.score += 10;
+                        updateComboDisplay();
+                        showComboPopup();
+                        updateScoreDisplay();
+                        
+                        setTimeout(() => {
+                            tile.element.remove();
+                            gameState.tiles = gameState.tiles.filter(t => t.id !== tile.id);
+                        }, 200);
+                        
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Game loop
+        function gameLoop() {
+            if (!gameState.isGameRunning) return;
+
+            // Spawn new tiles
+            if (Math.random() < gameConfig.spawnRate) {
+                createTile();
+            }
+
+            // Update tiles
+            updateTiles();
+
+            // Check for game over
+            if (gameState.lives <= 0) {
+                endGame();
+                return;
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // End game
+        function endGame() {
+            gameState.isGameRunning = false;
+            updateBestScore();
+            elements.finalScore.textContent = gameState.score;
+            elements.gameOverScreen.classList.add('visible');
+            
+            setTimeout(() => {
+                elements.gameOverScreen.classList.remove('visible');
+                elements.startMenu.classList.remove('hidden');
+            }, 3000);
+        }
+
+        // Start game
+        function startGame() {
+            elements.startMenu.classList.add('hidden');
+            gameState.score = 0;
+            gameState.lives = 4;
+            gameState.combo = 0;
+            gameState.isGameRunning = true;
+            gameState.tiles = [];
+            gameState.nextTileId = 0;
+            gameState.baseSpeed = gameState.selectedSpeed;
+            gameConfig.speed = gameState.selectedSpeed;
+            updateScoreDisplay();
+            updateLivesDisplay();
+            updateComboDisplay();
+            elements.gameOverScreen.classList.remove('visible');
+            
+            document.querySelectorAll('.tile').forEach(tile => tile.remove());
+            
+            gameLoop();
+        }
+
+        // Keyboard controls
+        const keyMap = {
+            'q': 0, 'Q': 0,
+            'w': 1, 'W': 1,
+            'e': 2, 'E': 2,
+            'r': 3, 'R': 3
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.isGameRunning || !(e.key in keyMap)) return;
+            e.preventDefault();
+            clickTile(keyMap[e.key]);
+        });
+
+        // Touch controls for mobile
+        document.addEventListener('touchstart', (e) => {
+            if (!gameState.isGameRunning) return;
+            const touch = e.touches[0];
+            const gameRect = elements.gameContainer.getBoundingClientRect();
+            const x = touch.clientX - gameRect.left;
+            const column = Math.floor(x / gameConfig.tileWidth);
+            if (column >= 0 && column < gameConfig.columns) {
+                clickTile(column);
+            }
+        });
+
+        // Event listeners
+        elements.startButton.addEventListener('click', startGame);
+        elements.restartButton.addEventListener('click', startGame);
+
+        // Initialize
+        updateLivesDisplay();
+        elements.bestScoreDisplay.textContent = gameState.bestScore;
+    </script>
+</body>
+</html>
