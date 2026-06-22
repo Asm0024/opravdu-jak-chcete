@@ -142,21 +142,29 @@
 
         .menu-subtitle {
             font-size: 18px;
-            color: #ccc;
+            color: #b0c4ff;
             text-align: center;
             font-style: italic;
             letter-spacing: 1px;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
         }
 
         .menu-controls {
             font-size: 15px;
-            color: #aaa;
+            color: #b0c4ff;
             text-align: center;
             line-height: 1.8;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(102, 126, 234, 0.1);
             padding: 20px 30px;
             border-radius: 10px;
             border-left: 4px solid #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
         }
 
         .menu-controls strong {
@@ -172,18 +180,23 @@
             gap: 15px;
             justify-content: center;
             align-items: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(156, 39, 176, 0.1);
             padding: 20px 30px;
             border-radius: 10px;
-            border-left: 4px solid #764ba2;
+            border: 2px solid rgba(156, 39, 176, 0.3);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(156, 39, 176, 0.2);
         }
 
         .speed-label {
-            color: white;
+            color: #b0c4ff;
             font-size: 16px;
             font-weight: bold;
             display: block;
             letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
         }
 
         .speed-buttons {
@@ -196,24 +209,26 @@
         .speed-btn {
             padding: 10px 20px;
             font-size: 14px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(102, 126, 234, 0.15);
+            color: #b0c4ff;
+            border: 2px solid rgba(102, 126, 234, 0.5);
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.2s;
             font-weight: bold;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
         }
 
         .speed-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
         }
 
         .speed-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(156, 39, 176, 0.6));
+            border-color: #b0c4ff;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 1), 0 0 15px rgba(156, 39, 176, 0.8);
         }
 
         #startButton {
@@ -222,17 +237,23 @@
             font-weight: bold;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
+            border: 2px solid #b0c4ff;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 
+                0 0 20px rgba(102, 126, 234, 0.6),
+                0 0 40px rgba(156, 39, 176, 0.4);
             letter-spacing: 1px;
+            position: relative;
+            z-index: 10;
         }
 
         #startButton:hover {
             transform: scale(1.08);
-            box-shadow: 0 0 40px rgba(102, 126, 234, 1);
+            box-shadow: 
+                0 0 40px rgba(102, 126, 234, 1),
+                0 0 60px rgba(156, 39, 176, 0.7);
         }
 
         #startButton:active {
@@ -244,10 +265,13 @@
             position: relative;
             width: 400px;
             height: 600px;
-            background: #000;
-            border: 3px solid #fff;
+            background: linear-gradient(135deg, #0a0e27, #1a1a3e);
+            border: 3px solid #667eea;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            box-shadow: 
+                0 0 30px rgba(102, 126, 234, 0.6),
+                0 0 60px rgba(156, 39, 176, 0.4),
+                inset 0 0 20px rgba(102, 126, 234, 0.1);
         }
 
         /* Game Area */
@@ -395,31 +419,34 @@
             z-index: 20;
             display: flex;
             justify-content: space-between;
-            color: white;
+            color: #b0c4ff;
             font-size: 18px;
             font-weight: bold;
         }
 
         #score {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(102, 126, 234, 0.2);
             padding: 8px 15px;
             border-radius: 5px;
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
         }
 
         #lives {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(156, 39, 176, 0.2);
             padding: 8px 15px;
             border-radius: 5px;
+            border: 1px solid rgba(156, 39, 176, 0.4);
+            box-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
+            text-shadow: 0 0 10px rgba(156, 39, 176, 0.6);
         }
 
         .life {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            background: #ff4444;
-            border-radius: 50%;
+            font-size: 20px;
             margin-left: 5px;
-            vertical-align: middle;
+            animation: twinkling 2s ease-in-out infinite;
         }
 
         /* Game Over Screen */
@@ -427,30 +454,49 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.98);
             z-index: 100;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
             display: none;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(156, 39, 176, 0.3);
         }
 
         #gameOverScreen.visible {
             display: flex;
+            animation: gameOverFadeIn 0.3s ease-out;
+        }
+
+        @keyframes gameOverFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .game-over-title {
             font-size: 48px;
-            color: #ff4444;
+            color: #ff7b7b;
             text-align: center;
+            text-shadow: 
+                0 0 20px rgba(255, 123, 123, 0.8),
+                0 0 40px rgba(156, 39, 176, 0.4);
+            letter-spacing: 2px;
         }
 
         .final-score {
             font-size: 32px;
-            color: white;
+            color: #b0c4ff;
             text-align: center;
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.6);
         }
 
         #restartButton {
@@ -458,16 +504,22 @@
             font-size: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
+            border: 2px solid #b0c4ff;
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 
+                0 0 20px rgba(102, 126, 234, 0.6),
+                0 0 40px rgba(156, 39, 176, 0.4);
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
         #restartButton:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(102, 126, 234, 0.9);
+            box-shadow: 
+                0 0 30px rgba(102, 126, 234, 0.9),
+                0 0 50px rgba(156, 39, 176, 0.6);
         }
 
         /* Key guides */
@@ -485,7 +537,9 @@
             font-size: 48px;
             font-weight: bold;
             color: #FFD93D;
-            text-shadow: 0 0 20px rgba(255, 217, 61, 0.8);
+            text-shadow: 
+                0 0 20px rgba(255, 217, 61, 0.8),
+                0 0 40px rgba(255, 217, 61, 0.4);
             pointer-events: none;
             opacity: 0;
             z-index: 15;
@@ -507,26 +561,31 @@
             position: absolute;
             top: 40px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(102, 126, 234, 0.2);
             padding: 8px 15px;
             border-radius: 5px;
-            color: white;
+            color: #b0c4ff;
             font-size: 14px;
             z-index: 25;
+            border: 1px solid rgba(102, 126, 234, 0.4);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            text-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
         }
 
         #combo {
             position: absolute;
             bottom: 100px;
             left: 10px;
-            background: rgba(255, 217, 61, 0.2);
+            background: rgba(255, 217, 61, 0.15);
             padding: 8px 15px;
             border-radius: 5px;
             color: #FFD93D;
             font-size: 16px;
             font-weight: bold;
-            border: 2px solid #FFD93D;
+            border: 2px solid rgba(255, 217, 61, 0.5);
             z-index: 25;
+            box-shadow: 0 0 15px rgba(255, 217, 61, 0.3);
+            text-shadow: 0 0 10px rgba(255, 217, 61, 0.6);
         }
 
         .pulse-effect {
@@ -542,8 +601,8 @@
 <body>
     <!-- Start Menu -->
     <div id="startMenu">
-        <div class="menu-title">🎹 PIANO TILES</div>
-        <div class="menu-subtitle">Click the tiles as they fall!</div>
+        <div class="menu-title">✨ PIANO TILES ✨</div>
+        <div class="menu-subtitle">Click the tiles as they fall through space!</div>
         <div class="menu-controls">
             <strong>Controls:</strong><br>
             Q - Left Column<br>
@@ -680,7 +739,7 @@
         function updateLivesDisplay() {
             let livesHTML = '';
             for (let i = 0; i < gameState.lives; i++) {
-                livesHTML += '<span class="life"></span>';
+                livesHTML += '<span class="life">⭐</span>';
             }
             elements.livesDisplay.innerHTML = livesHTML;
         }
@@ -811,7 +870,7 @@
             setTimeout(() => {
                 elements.gameOverScreen.classList.remove('visible');
                 elements.startMenu.classList.remove('hidden');
-            }, 3000);
+            }, 2500);
         }
 
         // Start game
