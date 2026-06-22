@@ -369,7 +369,10 @@
         }
 
         .tile[data-column="1"] {
-            background: linear-gradient(135deg, #ffffff 0%, #d8d8d8 100%);
+            background-image: url('img_white_tile.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 220% auto;
             border-color: rgba(230, 230, 230, 0.8);
             color: #1a0033;
         }
@@ -902,6 +905,19 @@
             requestAnimationFrame(gameLoop);
         }
 
+            // Handle a missed click (wrong column or no tile)
+            function handleMiss() {
+                gameState.lives--;
+                gameState.combo = 0;
+                updateComboDisplay();
+                updateLivesDisplay();
+                elements.gameContainer.classList.add('pulse-effect');
+                setTimeout(() => elements.gameContainer.classList.remove('pulse-effect'), 300);
+                if (gameState.lives <= 0) {
+                    endGame();
+                }
+            }
+
         // End game
         function endGame() {
             gameState.isGameRunning = false;
@@ -947,7 +963,8 @@
         document.addEventListener('keydown', (e) => {
             if (!gameState.isGameRunning || !(e.key in keyMap)) return;
             e.preventDefault();
-            clickTile(keyMap[e.key]);
+            const hit = clickTile(keyMap[e.key]);
+            if (!hit) handleMiss();
         });
 
         // Touch controls for mobile
@@ -958,7 +975,8 @@
             const x = touch.clientX - gameRect.left;
             const column = Math.floor(x / gameConfig.tileWidth);
             if (column >= 0 && column < gameConfig.columns) {
-                clickTile(column);
+                const hit = clickTile(column);
+                if (!hit) handleMiss();
             }
         });
 
